@@ -1,11 +1,8 @@
 // La funcionalidad de el boton y el QR, validar QR para ir a la screen QR_Vaucher
-
-import { Text, TouchableOpacity, View, StyleSheet, StatusBar, Alert} from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet, StatusBar, Alert } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
 import React, { useEffect, useState, useRef } from "react";
-import { Camera, CameraView } from 'expo-camera';
-import { AppState } from "react-native";
-
+import { Camera } from 'expo-camera';
 
 export default function QR_Scanner({ navigation }) {
   const qrLock = useRef(false);
@@ -44,43 +41,31 @@ export default function QR_Scanner({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.backButtonText}>↩︎</Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
-	        <Text style={styles.backButtonText}>↩︎</Text>
-        </TouchableOpacity>
+      <View style={styles.border}></View>
 
-        <View style={styles.border}></View>
+      <Camera
+        style={StyleSheet.absoluteFillObject}
+        type={Camera.Constants.Type.back}
+        onBarCodeScanned={handleBarcodeScanned} // Llama a la función cuando se escanea un código
+      />
 
-        <CameraView
-          style={StyleSheet.absoluteFillObject}
-          facing="back"
-          onBarcodeScanned={({ data }) => {
-            if (data && !qrLock.current) {
-              qrLock.current = true;
-              Alert.alert("Scanned QR code", `Datos: ${data}`, [
-                {
-                  text: "OK",
-                  onPress: () =>
-                    navigation.navigate("Transfer", { qrData: data }),
-                },
-              ]);
-            }
-          }}
-        />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Transfer')}>
+        <View style={styles.icon_1}>
+          <Feather name="arrow-right" size={24} color="#001b48"/>
+        </View>
+        <Text style={styles.text_button}>Continue</Text>
+      </TouchableOpacity>
 
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Transfer')}>
-          <View style={styles.icon_1}>
-            <Feather name="arrow-right" size={24} color="#001b48"/>
-          </View>
-          <Text style={styles.text_button}>Continue</Text>
-        </TouchableOpacity>
-
-        <StatusBar style="auto" />
+      <StatusBar style="auto" />
     </View>
-    );
+  );
 }
-//CSS
+
+// CSS
 const styles = StyleSheet.create({
   container: {
     padding: 80,
