@@ -4,48 +4,8 @@ import { Text, TouchableOpacity, View, StyleSheet, StatusBar} from "react-native
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Feather from '@expo/vector-icons/Feather';
 import QRCode from 'react-native-qrcode-svg';
-import React, { useState, useEffect } from "react";
-import {AsyncStorage} from '@react-native-async-storage/async-storage';
-import { Image } from "react-native";
 
 export default function QR({ navigation }) {
-  const [qrData, setQrData] = useState(null); 
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchQrData = async () => {
-      try {
-        const accountId = await AsyncStorage.getItem('accountId');
-        if (!accountId) {
-          console.log("Error: Account ID not found.");
-          return;
-        }
-
-        const response = await fetch("https://api-bancamovil-production.up.railway.app/qr_codes", {
-          method: "GET",
-          headers: {
-            "account_id": accountId,
-          },
-        });
-
-        const data = await response.json();
-
-        if (data.status === 200) {
-          setQrData(data.qr_data);
-        } else {
-          console.log('Error fetching qr_data:', data.msg);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQrData();
-  }, []);
-
-
   return (
     <View style={styles.container}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
@@ -59,22 +19,13 @@ export default function QR({ navigation }) {
           <View style={styles.icon_1}>
             <MaterialCommunityIcons name="qrcode-scan" size={200} color="white" />
           </View>
-
           <View style={styles.qr}>
-        {loading ? (
-          <Text style={styles.errorText}>Loading QR...</Text>
-        ) : qrData ? (
-          <View>
-            <Image
-              source={{ uri: qrData.image_base64 }} //
-              style={{ width: 150, height: 150 }}
+            <QRCode 
+              value="Texto o URL estática aquí" 
+              size={150} 
+              backgroundColor="white"
             />
-            <Text style={styles.errorText}>QR ID: {qrData.qr_id}</Text>
           </View>
-        ) : (
-          <Text style={styles.errorText}>Error loading QR data</Text>
-        )}
-      </View>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('QR_Scanner')}>
             <View style={styles.icon_2}>
