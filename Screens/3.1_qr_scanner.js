@@ -5,6 +5,8 @@ import Feather from '@expo/vector-icons/Feather';
 import React, { useEffect, useState, useRef } from "react";
 import { Camera, CameraView } from 'expo-camera';
 import { AppState } from "react-native";
+import QRCode from 'react-native-qrcode-svg';
+
 
 
 export default function QR_Scanner({ navigation }) {
