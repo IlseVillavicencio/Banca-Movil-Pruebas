@@ -24,7 +24,7 @@ export default function QR({ navigation }) {
         const response = await fetch("https://api-bancamovil-production.up.railway.app/qr_codes", {
           method: "GET",
           headers: {
-            "account_id": accountId, // Pasamos el account_id
+            "account_id": accountId,
           },
         });
 
